@@ -1,6 +1,8 @@
 # pr-uml-diagram
 
-Cursor and Claude Code skill that builds an interactive component diagram from one or more GitHub pull requests.
+Stop reading the diff line by line. Point an agent at the pull request and look at the design: which blocks were added, changed, or removed, and how they connect. The low-level design, as a diagram you can zoom, filter by PR, and click into.
+
+Cursor and Claude Code skill that builds that diagram from one or more GitHub pull requests.
 
 Copy this folder into a skills directory:
 
@@ -10,3 +12,11 @@ Copy this folder into a skills directory:
 | Claude Code | `~/.claude/skills/pr-uml-diagram/` | `.claude/skills/pr-uml-diagram/` |
 
 Then ask for a UML or component diagram of a pull request. The agent writes a `data.json`; `scripts/build.py` renders a Cursor canvas and a standalone HTML file.
+
+## Examples
+
+Open these in a browser. Scroll to zoom, drag to pan, click a block for details.
+
+- [Envoy #47715](examples/envoy-47715.html) — upstream connection attempts for HTTP dynamic modules
+- [Envoy #47733](examples/envoy-47733.html) — Zipkin keeps the single `b3` header
+- [Kubernetes #142108](examples/k8s-142108.html) — ML-DSA pod certificate key types
