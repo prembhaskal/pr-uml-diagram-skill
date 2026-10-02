@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate a PR-diagram data.json and render it as a Cursor canvas and/or standalone HTML.
+"""Validate a PR-diagram data.json and render a standalone HTML file.
 
 Usage:
-  build.py data.json --canvas <canvases-dir>/<name>.canvas.tsx [--html <path>.html]
+  build.py data.json --html <path>.html
 """
 import argparse
 import html
@@ -55,11 +55,8 @@ def validate(d):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("data")
-    ap.add_argument("--canvas")
-    ap.add_argument("--html")
+    ap.add_argument("--html", required=True)
     a = ap.parse_args()
-    if not a.canvas and not a.html:
-        sys.exit("pass --canvas and/or --html")
 
     data = json.loads(Path(a.data).read_text())
     errs = validate(data)
@@ -67,16 +64,10 @@ def main():
         print("data.json invalid:", *errs, sep="\n  ", file=sys.stderr)
         sys.exit(1)
     blob = json.dumps(data, indent=1, ensure_ascii=False)
-
-    if a.canvas:
-        out = (TEMPLATES / "diagram.canvas.tsx").read_text().replace("__DATA__", blob)
-        Path(a.canvas).write_text(out)
-        print(f"canvas: {a.canvas}")
-    if a.html:
-        safe = blob.replace("</", "<\\/")
-        out = (TEMPLATES / "diagram.html").read_text().replace("__DATA__", safe).replace("__TITLE__", html.escape(data["title"]))
-        Path(a.html).write_text(out)
-        print(f"html:   {a.html}")
+    safe = blob.replace("</", "<\\/")
+    out = (TEMPLATES / "diagram.html").read_text().replace("__DATA__", safe).replace("__TITLE__", html.escape(data["title"]))
+    Path(a.html).write_text(out)
+    print(f"html:   {a.html}")
     print(f"ok: {len(data['nodes'])} nodes, {len(data['edges'])} edges, {len(data['prs'])} PRs")
 
 

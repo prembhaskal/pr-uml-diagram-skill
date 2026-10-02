@@ -1,11 +1,11 @@
 ---
 name: pr-uml-diagram
-description: Builds an interactive, zoomable UML-style component diagram from one or more GitHub PRs, showing which blocks (modules, files, classes) and links were added, changed, or removed per PR, with click-for-details. Outputs a Cursor canvas and/or a standalone browser HTML file. Use when the user asks for a UML, architecture, or component diagram of a PR, a PR stack, or a set of PRs.
+description: Builds an interactive, zoomable UML-style component diagram from one or more GitHub PRs, showing which blocks (modules, files, classes) and links were added, changed, or removed per PR, with click-for-details. Outputs a standalone browser HTML file. Use when the user asks for a UML, architecture, or component diagram of a PR, a PR stack, or a set of PRs.
 ---
 
 # PR → UML diagram
 
-The agent only authors a `data.json`. Scripts extract the diff facts and render both outputs from shared templates, so the rendering code never needs to be regenerated.
+The agent only authors a `data.json`. Scripts extract the diff facts and render HTML from a shared template, so the rendering code never needs to be regenerated.
 
 ## Workflow
 
@@ -59,28 +59,19 @@ Modeling rules:
 ### 3. Build
 
 ```bash
-python3 SKILL_DIR/scripts/build.py <data.json> \
-  --canvas ~/.cursor/projects/<workspace>/canvases/<name>.canvas.tsx \
-  --html   ~/Downloads/<name>.html
+python3 SKILL_DIR/scripts/build.py <data.json> --html ~/Downloads/<name>.html
 ```
 
-- Both flags are optional, but pass at least one. The default is both, unless the user asked for only one.
 - The script validates node ids, lanes, and change codes, and exits non-zero with the errors. Fix `data.json` and rerun.
-- The canvas must be written directly under the workspace `canvases/` directory. Follow the `canvas` skill's path rules.
 
 ### 4. Report
 
-Keep it brief. Include a link to the canvas `.canvas.tsx`, the HTML path (`open <path>` shows it in a browser), and 1–3 notable findings.
+Keep it brief. Include the HTML path (`open <path>` shows it in a browser) and 1–3 notable findings.
 
-## Outputs
+## Output
 
-| Output | Opens in | Notes |
-|---|---|---|
-| `.canvas.tsx` | Cursor only, beside chat | Uses host theme. Not viewable in a browser. |
-| `.html` | Any browser, offline | Self-contained with no dependencies. Follows OS light/dark. Shareable by Slack or Drive. |
-
-Both support scroll to zoom, drag to pan, a filter to one PR's delta, hover to highlight links, and click for block details.
+A self-contained `.html` file. It opens in any browser, works offline, and follows OS light/dark. Scroll to zoom, drag to pan, filter to one PR's delta, hover to highlight links, and click a block for details.
 
 ## Resources
 
-- Renderers (do not edit per run): `templates/diagram.canvas.tsx`, `templates/diagram.html`
+- Renderer (do not edit per run): `templates/diagram.html`
